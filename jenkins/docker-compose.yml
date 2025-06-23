@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build:
+      context: .
+    
+    # MENGGUNAKAN MODE JARINGAN HOST
+    # Ini menghilangkan isolasi jaringan. Container berbagi IP dengan host.
+    network_mode: "host"
+    
+    # Bagian 'ports' HARUS DIHAPUS atau dikomentari saat menggunakan network_mode: host.
+    # Jenkins akan langsung bisa diakses di http://localhost:8080.
+    # ports:
+    #   - "8080:8080"
+    #   - "50000:50000"
+
+    privileged: true
+    user: root
+    container_name: jenkins-k8s-master
+    
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Kita tetap menggunakan kubeconfig yang flattened untuk menghindari masalah path
+      - ./jenkins_k8s_config/kubeconfig:/root/.kube/config:ro
+      
+    restart: unless-stopped
+
+volumes:
+  jenkins_data: {}
+

@@ -1,0 +1,16 @@
+replicaCount: 2
+
+image:
+  repository: texsa/flask-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+
+env:
+  configMap: flask-config
+  secret: flask-secret
+
